@@ -1,5 +1,3 @@
 # testrepo
 
 testdeployment
-dafsdf
-asdfasfd
