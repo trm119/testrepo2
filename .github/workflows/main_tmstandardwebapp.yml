@@ -52,5 +52,5 @@ jobs:
         with:
           app-name: 'tmstandardwebapp'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3548BE82A6FE4E809213225D092A1245 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_1857DEAE1A2C4F6BA0B0556BA82F9678 }}
           package: .
