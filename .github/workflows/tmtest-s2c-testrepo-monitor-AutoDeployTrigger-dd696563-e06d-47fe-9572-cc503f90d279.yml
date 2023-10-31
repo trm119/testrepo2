@@ -1,0 +1,45 @@
+name: Trigger auto deployment for tmtest-s2c-testrepo-monitor
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ main ]
+    paths:
+    - '**'
+    - '.github/workflows/tmtest-s2c-testrepo-monitor-AutoDeployTrigger-dd696563-e06d-47fe-9572-cc503f90d279.yml'
+
+  # Allow manual trigger 
+  workflow_dispatch:      
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions: 
+      id-token: write #This is required for requesting the OIDC JWT Token
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.TMTESTS2CTESTREPOMONITOR_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.TMTESTS2CTESTREPOMONITOR_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.TMTESTS2CTESTREPOMONITOR_AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }} 
+          registryUrl: tmregtest.azurecr.io
+          registryUsername: ${{ secrets.TMTESTS2CTESTREPOMONITOR_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.TMTESTS2CTESTREPOMONITOR_REGISTRY_PASSWORD }}
+          containerAppName: tmtest-s2c-testrepo-monitor
+          resourceGroup: tmauldin-test
+          imageToBuild: tmregtest.azurecr.io/tmtest-s2c-testrepo-monitor:${{ github.sha }}
+          
+
+
